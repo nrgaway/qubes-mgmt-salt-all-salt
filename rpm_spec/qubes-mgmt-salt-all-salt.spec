@@ -17,8 +17,7 @@
 %define salt_pillar_dir /srv/pillar
 %define salt_formula_dir /srv/formulas
 
-
-Name:      qubes-mgmt-salt-base-salt
+Name:      qubes-mgmt-salt-all-salt
 Version:   %{version}
 Release:   %{rel}%{?dist}
 Summary:   Salt formula to configure salt itself
@@ -27,7 +26,7 @@ URL:	   http://www.qubes-os.org/
 
 Group:     System administration tools
 BuildArch: noarch
-Requires:  qubes-mgmt-salt-config
+Requires:  qubes-mgmt-salt-base
 
 %define _builddir %(pwd)
 
