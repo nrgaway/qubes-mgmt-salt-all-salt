@@ -9,5 +9,11 @@ Homepage: http://www.qubes-os.org
 Package: qubes-mgmt-salt-all-salt
 Section: admin
 Architecture: all
-Depends: qubes-mgmt-salt-base
+Depends:
+    qubes-mgmt-salt
+Recommends:
+    ca-certificates,
+    git,
+    python-dulwich,
+    python-pip
 Description: Salt formula to configure salt itself.
