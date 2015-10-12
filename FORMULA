@@ -1,13 +1,19 @@
 # vim: set syntax=yaml ts=2 sw=2 sts=2 et :
 
-name:          salt-formula
-top_level_dir: salt
-saltenv:       base
-version:       3.0.0
-release:       1
-os:            RedHat, Debian, Ubuntu, Suse, FreeBSD
-os_family:     RedHat, Debian, Suse, FreeBSD
-summary:       Salt formula to configure salt itself
+package-name:       qubes-mgmt-salt-all-salt
+name:               salt-formula
+top_level_dir:      salt
+formula-files:      README.rst LICENSE salt pillar.example
+pillar-files:       pillar
+test-formula-files: 
+test-pillar-files: 
+formula_root:       /srv/formulas
+saltenv:            all
+version:            3.0.0
+release:            1
+os:                 RedHat, Debian, Ubuntu, Suse, FreeBSD
+os_family:          RedHat, Debian, Suse, FreeBSD
+summary:            Salt formula to configure salt itself
 description: |
   Salt formula to configure salt itself.
 
