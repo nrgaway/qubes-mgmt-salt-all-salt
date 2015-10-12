@@ -1,26 +1,19 @@
-%{!?version: %define version %(cat version)}
-%{!?rel: %define rel %(cat rel)}
+%{!?version: %define version %(make get-version)}
+%{!?rel: %define rel %(make get-release)}
+%{!?package_name: %define package_name %(make get-package_name)}
+%{!?package_summary: %define package_summary %(make get-summary)}
+%{!?package_description: %define package_description %(make get-description)}
 
-%{!?formula_name: %define formula_name %(grep 'name' FORMULA|head -n 1|cut -f 2 -d :|xargs)}
-%{!?state_name: %define state_name %(grep 'top_level_dir' FORMULA|head -n 1|cut -f 2 -d :|xargs)}
-%{!?saltenv: %define saltenv %(grep 'saltenv' FORMULA|head -n 1|cut -f 2 -d :|xargs)}
+%{!?formula_name: %define formula_name %(make get-formula_name)}
+%{!?state_name: %define state_name %(make get-state_name)}
+%{!?saltenv: %define saltenv %(make get-saltenv)}
+%{!?pillar_dir: %define pillar_dir %(make get-pillar_dir)}
+%{!?formula_dir: %define formula_dir %(make get-formula_dir)}
 
-%if "%{state_name}" == ""
-  %define state_name %{formula_name}
-%endif
-
-%if "%{saltenv}" == ""
-  %define saltenv base
-%endif
-
-%define salt_state_dir /srv/salt
-%define salt_pillar_dir /srv/pillar
-%define salt_formula_dir /srv/formulas
-
-Name:      qubes-mgmt-salt-all-salt
+Name:      %{package_name}
 Version:   %{version}
 Release:   %{rel}%{?dist}
-Summary:   Salt formula to configure salt itself
+Summary:   %{package_summary}
 License:   GPL 2.0
 URL:	   http://www.qubes-os.org/
 
@@ -34,7 +27,7 @@ Requires:  python-dulwich
 %define _builddir %(pwd)
 
 %description
-Salt formula to configure salt itself.
+%{package_description}
 
 %prep
 # we operate on the current directory, so no need to unpack anything
@@ -46,12 +39,13 @@ ln -sf . %{name}-%{version}
 %build
 
 %install
-make install DESTDIR=%{buildroot} LIBDIR=%{_libdir} BINDIR=%{_bindir} SBINDIR=%{_sbindir} SYSCONFDIR=%{_sysconfdir} VERBOSE=%{_verbose}
+make install DESTDIR=%{buildroot} LIBDIR=%{_libdir} BINDIR=%{_bindir} SBINDIR=%{_sbindir} SYSCONFDIR=%{_sysconfdir}
 
 %post
 # Update Salt Configuration
-qubesctl state.sls qubes.config -l quiet --out quiet > /dev/null || true
-qubesctl saltutil.sync_all -l quiet --out quiet > /dev/null || true
+qubesctl state.sls config -l quiet --out quiet > /dev/null || true
+qubesctl saltutil.clear_cache -l quiet --out quiet > /dev/null || true
+qubesctl saltutil.sync_all refresh=true -l quiet --out quiet > /dev/null || true
 
 # Enable States
 qubesctl topd.enable %{state_name}.formulas saltenv=%{saltenv} -l quiet --out quiet > /dev/null || true
@@ -62,11 +56,12 @@ qubesctl topd.enable %{state_name}.formulas saltenv=%{saltenv} pillar=true -l qu
 
 %files
 %defattr(-,root,root)
-%attr(750, root, root) %dir %{salt_formula_dir}/%{saltenv}/%{formula_name}
-%{salt_formula_dir}/%{saltenv}/%{formula_name}/*
-%attr(750, root, root) %dir %{salt_pillar_dir}/%{saltenv}/%{state_name}
-%{salt_pillar_dir}/%{saltenv}/%{state_name}/*
-%config(noreplace) %{salt_pillar_dir}/%{saltenv}/%{state_name}/formulas.sls
-%config(noreplace) %{salt_pillar_dir}/%{saltenv}/%{state_name}/formulas.top
+%attr(750, root, root) %dir %{formula_dir}
+%{formula_dir}/*
+
+%attr(750, root, root) %dir %{pillar_dir}/%{state_name}
+%{pillar_dir}/%{state_name}/*
+%config(noreplace) %{pillar_dir}/%{state_name}/formulas.sls
+%{pillar_dir}/%{state_name}/formulas.top
 
 %changelog

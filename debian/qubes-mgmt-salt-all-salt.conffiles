@@ -1,2 +1,1 @@
-/srv/pillar/base/salt/formulas.sls
-/srv/pillar/base/salt/formulas.top
+/srv/pillar/all/salt/formulas.sls
