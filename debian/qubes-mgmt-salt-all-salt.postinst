@@ -25,11 +25,11 @@ case "${1}" in
         qubesctl saltutil.sync_all refresh=true -l quiet --out quiet > /dev/null || true
 
         # Enable States
-        qubesctl topd.enable salt.formulas saltenv=all -l quiet --out quiet > /dev/null || true
-        qubesctl topd.enable salt.gitfs.dulwich saltenv=all -l quiet --out quiet > /dev/null || true
+        qubesctl top.enable salt.formulas saltenv=all -l quiet --out quiet > /dev/null || true
+        qubesctl top.enable salt.gitfs.dulwich saltenv=all -l quiet --out quiet > /dev/null || true
 
         # Enable Pillar States
-        qubesctl topd.enable salt.formulas saltenv=all pillar=true -l quiet --out quiet > /dev/null || true
+        qubesctl top.enable salt.formulas saltenv=all pillar=true -l quiet --out quiet > /dev/null || true
         ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
