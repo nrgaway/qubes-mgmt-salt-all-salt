@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# vim: set syntax=yaml ts=2 sw=2 sts=2 et :
+
 # WARNING:  git formulas may not be secure since they are not verified.
 # true enables, false disables
 enable_gitfs: false
