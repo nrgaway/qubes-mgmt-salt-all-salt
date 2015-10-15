@@ -1,9 +1,10 @@
 # vim: set syntax=yaml ts=2 sw=2 sts=2 et :
 
-base:
+{%- if grains['os_family']|lower == 'debian' %}
+all:
    # VM nodegroup + enable_gitfs == true
+   # Enable in /srv/pillar/vm/salt/formulas.sls
   'P@virtual_subtype:Xen\sPV\sDomU and I@enable_gitfs:true':
     - match: compound
-    {% if grains['os_family']|lower == 'debian' %}
     - salt.gitfs.dulwich
-    {% endif %}
+{%- endif %}
