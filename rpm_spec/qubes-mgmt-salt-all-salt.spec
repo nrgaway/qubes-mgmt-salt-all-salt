@@ -1,19 +1,9 @@
-%{!?version: %define version %(make get-version)}
-%{!?rel: %define rel %(make get-release)}
-%{!?package_name: %define package_name %(make get-package_name)}
-%{!?package_summary: %define package_summary %(make get-summary)}
-%{!?package_description: %define package_description %(make get-description)}
+%{!?version: %define version %(cat version)}
 
-%{!?formula_name: %define formula_name %(make get-formula_name)}
-%{!?state_name: %define state_name %(make get-state_name)}
-%{!?saltenv: %define saltenv %(make get-saltenv)}
-%{!?pillar_dir: %define pillar_dir %(make get-pillar_dir)}
-%{!?formula_dir: %define formula_dir %(make get-formula_dir)}
-
-Name:      %{package_name}
+Name:      qubes-mgmt-salt-all-salt
 Version:   %{version}
-Release:   %{rel}%{?dist}
-Summary:   %{package_summary}
+Release:   1%{?dist}
+Summary:   Salt formula to configure salt itself
 License:   GPL 2.0
 URL:	   http://www.qubes-os.org/
 
@@ -27,7 +17,7 @@ Requires:  python-dulwich
 %define _builddir %(pwd)
 
 %description
-%{package_description}
+Salt formula to configure salt itself.
 
 %prep
 # we operate on the current directory, so no need to unpack anything
@@ -48,21 +38,66 @@ qubesctl saltutil.clear_cache -l quiet --out quiet > /dev/null || true
 qubesctl saltutil.sync_all refresh=true -l quiet --out quiet > /dev/null || true
 
 # Enable States
-qubesctl top.enable %{state_name}.formulas saltenv=%{saltenv} -l quiet --out quiet > /dev/null || true
-qubesctl top.enable %{state_name}.gitfs.dulwich saltenv=%{saltenv} -l quiet --out quiet > /dev/null || true
+qubesctl top.enable salt.formulas saltenv=all -l quiet --out quiet > /dev/null || true
+qubesctl top.enable salt.gitfs.dulwich saltenv=all -l quiet --out quiet > /dev/null || true
 
 # Enable Pillar States
-qubesctl top.enable %{state_name}.formulas saltenv=%{saltenv} pillar=true -l quiet --out quiet > /dev/null || true
+qubesctl top.enable salt.formulas saltenv=all pillar=true -l quiet --out quiet > /dev/null || true
 
 %files
 %defattr(-,root,root)
 %doc LICENSE README.rst
-%attr(750, root, root) %dir %{formula_dir}
-%{formula_dir}/*
+%attr(750, root, root) %dir /srv/formulas/all/salt-formula
+/srv/formulas/all/salt-formula/LICENSE
+/srv/formulas/all/salt-formula/pillar.example
+/srv/formulas/all/salt-formula/README.rst
+/srv/formulas/all/salt-formula/salt/api.sls
+/srv/formulas/all/salt-formula/salt/cloud.sls
+/srv/formulas/all/salt-formula/salt/defaults.yaml
+/srv/formulas/all/salt-formula/salt/files/cloud.maps.d/ec2.conf
+/srv/formulas/all/salt-formula/salt/files/cloud.maps.d/gce.conf
+/srv/formulas/all/salt-formula/salt/files/cloud.maps.d/rsos.conf
+/srv/formulas/all/salt-formula/salt/files/cloud.maps.d/saltify.conf
+/srv/formulas/all/salt-formula/salt/files/cloud.profiles.d/ec2.conf
+/srv/formulas/all/salt-formula/salt/files/cloud.profiles.d/gce.conf
+/srv/formulas/all/salt-formula/salt/files/cloud.profiles.d/rsos.conf
+/srv/formulas/all/salt-formula/salt/files/cloud.profiles.d/saltify.conf
+/srv/formulas/all/salt-formula/salt/files/cloud.providers.d/ec2.conf
+/srv/formulas/all/salt-formula/salt/files/cloud.providers.d/gce.conf
+/srv/formulas/all/salt-formula/salt/files/cloud.providers.d/rsos.conf
+/srv/formulas/all/salt-formula/salt/files/cloud.providers.d/saltify.conf
+/srv/formulas/all/salt-formula/salt/files/key
+/srv/formulas/all/salt-formula/salt/files/master.d/f_defaults.conf
+/srv/formulas/all/salt-formula/salt/files/master.d/reactor.conf
+/srv/formulas/all/salt-formula/salt/files/minion.d/f_defaults.conf
+/srv/formulas/all/salt-formula/salt/files/roster.jinja
+/srv/formulas/all/salt-formula/salt/formulas.jinja
+/srv/formulas/all/salt-formula/salt/formulas.sls
+/srv/formulas/all/salt-formula/salt/formulas.top
+/srv/formulas/all/salt-formula/salt/gitfs/dulwich.sls
+/srv/formulas/all/salt-formula/salt/gitfs/dulwich.top
+/srv/formulas/all/salt-formula/salt/gitfs/gitpython.sls
+/srv/formulas/all/salt-formula/salt/gitfs/pygit2.sls
+/srv/formulas/all/salt-formula/salt/map.jinja
+/srv/formulas/all/salt-formula/salt/master.sls
+/srv/formulas/all/salt-formula/salt/minion.sls
+/srv/formulas/all/salt-formula/salt/pkgrepo/absent.sls
+/srv/formulas/all/salt-formula/salt/pkgrepo/debian/absent.sls
+/srv/formulas/all/salt-formula/salt/pkgrepo/debian/init.sls
+/srv/formulas/all/salt-formula/salt/pkgrepo/debian/saltstack.gpg
+/srv/formulas/all/salt-formula/salt/pkgrepo/debian/sources.list
+/srv/formulas/all/salt-formula/salt/pkgrepo/init.sls
+/srv/formulas/all/salt-formula/salt/pkgrepo/pkgrepo.top
+/srv/formulas/all/salt-formula/salt/pkgrepo/redhat/absent.sls
+/srv/formulas/all/salt-formula/salt/pkgrepo/redhat/init.sls
+/srv/formulas/all/salt-formula/salt/pkgrepo/ubuntu/absent.sls
+/srv/formulas/all/salt-formula/salt/pkgrepo/ubuntu/init.sls
+/srv/formulas/all/salt-formula/salt/ssh.sls
+/srv/formulas/all/salt-formula/salt/standalone.sls
+/srv/formulas/all/salt-formula/salt/syndic.sls
 
-%attr(750, root, root) %dir %{pillar_dir}/%{state_name}
-%{pillar_dir}/%{state_name}/*
-%config(noreplace) %{pillar_dir}/%{state_name}/formulas.sls
-%{pillar_dir}/%{state_name}/formulas.top
+%attr(750, root, root) %dir /srv/pillar/all/salt
+%config(noreplace) /srv/pillar/all/salt/formulas.sls
+/srv/pillar/all/salt/formulas.top
 
 %changelog
